@@ -1,3 +1,7 @@
+.idea
+.vscode
+node
+
 # Logs
 logs
 *.log
