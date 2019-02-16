@@ -2,6 +2,9 @@
 .vscode
 node
 
+build
+dist
+
 # Logs
 logs
 *.log
