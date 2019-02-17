@@ -5,6 +5,9 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const { ExpressOIDC } = require('@okta/oidc-middleware')
+const Sequelize = require('sequelize')
+const epilogue = require('epilogue')
+const ForbiddenError = epilogue.Errors.ForbiddenError
 
 const app = express()
 const port = 3000
@@ -35,12 +38,14 @@ app.use(oidc.router)
 app.use(cors())
 app.use(bodyParser.json())
 
+app.use(express.static(path.join(__dirname, 'public')))
+
 app.get('/home', (req, res) => {
-  res.send('<h1>Welcome!</h1><a href="/login">Login</a>')
+  res.sendFile(path.join(__dirname, './public/home.html'))
 })
 
 app.get('/admin', oidc.ensureAuthenticated(), (req, res) => {
-  res.send('Admin page')
+  res.sendFile(path.join(__dirname, './public/admin.html'))
 })
 
 app.get('/logout', (req, res) => {
@@ -52,4 +57,46 @@ app.get('/', (req, res) => {
   res.redirect('/home')
 })
 
-app.listen(port, () => console.log(`App is running on port ${port}`))
+const db = new Sequelize({
+  dialect: 'sqlite',
+  storage: './db.sqlite',
+  operatorsAliases: false,
+})
+
+const Post = db.define('posts', {
+  title: Sequelize.STRING,
+  content: Sequelize.TEXT,
+})
+
+epilogue.initialize({
+  app,
+  sequelize: db,
+})
+
+const PostResource = epilogue.resource({
+  model: Post,
+  endpoints: ['/posts', '/posts/:id'],
+})
+
+PostResource.all.auth(function(req, res, context) {
+  return new Promise(function(resolve, reject) {
+    if (!req.isAuthenticated()) {
+      res.status(401).send({
+        message: 'Unathorized',
+      })
+      resolve(context.stop)
+    } else {
+      resolve(context.continue)
+    }
+  })
+})
+
+db.sync().then(() => {
+  oidc.on('ready', () => {
+    app.listen(port, () => console.log(`App is running on port ${port}`))
+  })
+})
+
+oidc.on('error', err => {
+  console.log('oidc error: ', err)
+})
