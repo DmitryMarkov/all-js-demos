@@ -2,6 +2,10 @@
   "name": "react-playground",
   "version": "0.1.0",
   "private": true,
+  "resolutions": {
+    "lodash": ">=4.17.15",
+    "lodash.template": ">=4.5.0"
+  },
   "dependencies": {
     "react": "^16.8.2",
     "react-dom": "^16.8.2",

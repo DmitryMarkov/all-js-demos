@@ -10,6 +10,9 @@
     "test": "exit 1",
     "start": "webpack-dev-server --mode development"
   },
+  "resolutions": {
+    "lodash": ">=4.17.15"
+  },
   "dependencies": {
     "react": "16.8.2",
     "react-dom": "16.8.2"
