@@ -7,6 +7,10 @@
   "scripts": {
     "start": "nodemon index.js"
   },
+  "resolutions": {
+    "lodash": ">=4.17.15",
+    "lodash.merge": ">=4.6.2"
+  },
   "dependencies": {
     "@okta/oidc-middleware": "1.0.2",
     "body-parser": "1.18.3",
@@ -16,7 +20,7 @@
     "express": "4.16.4",
     "express-session": "1.15.6",
     "sequelize": "5.3.0",
-    "sqlite3": "4.0.4"
+    "sqlite3": "4.0.9"
   },
   "devDependencies": {
     "nodemon": "1.18.9"
