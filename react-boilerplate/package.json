@@ -11,7 +11,8 @@
     "start": "webpack-dev-server --mode development"
   },
   "resolutions": {
-    "lodash": ">=4.17.15"
+    "lodash": ">=4.17.15",
+    "set-value": ">=2.0.1"
   },
   "dependencies": {
     "react": "16.8.2",
